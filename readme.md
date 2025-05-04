@@ -2,6 +2,7 @@
 **Telegram bot with DeepSeek AI integration** \
 **DeepSeek-Model:** DeepSeek V3 0324
 
+[![Go](https://github.com/wnderbin/QuokkaAI-Bot/actions/workflows/go.yml/badge.svg)](https://github.com/wnderbin/QuokkaAI-Bot/actions/workflows/go.yml)
 [![Go](https://img.shields.io/badge/Go-%2300ADD8.svg?&logo=go&logoColor=white)](#)
 [![Postgres](https://img.shields.io/badge/Postgres-%23316192.svg?logo=postgresql&logoColor=white)](#)
 [![Redis](https://img.shields.io/badge/Redis-%23DD0031.svg?logo=redis&logoColor=white)](#)
