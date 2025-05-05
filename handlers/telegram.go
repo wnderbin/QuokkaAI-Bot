@@ -1,3 +1,4 @@
+// Tasks: Sending and receiving messages, functionality for interacting with the bot.
 package handlers
 
 import (
@@ -22,7 +23,7 @@ type TelegramHandler struct {
 func NewTelegramhandler(bot *telebot.Bot, neural *NeuralHandler, logger *log.Logger, rdb *redis.Client) *TelegramHandler { // Constructor that initializes the Telegram handler
 	go func() {
 		for {
-			if err := neural.cleanUpOldMessages(context.Background(), 5*time.Minute); err != nil {
+			if err := neural.cleanUpOldMessages(context.Background(), 24*time.Hour); err != nil {
 				logger.Printf("cleanUp error: %v", err)
 			}
 			time.Sleep(1 * time.Minute)
@@ -46,6 +47,8 @@ func (h *TelegramHandler) RegisterHandlers() { // Registers command and message 
 	h.Bot.Handle(telebot.OnText, h.HandleText)
 }
 
+// --- Handlers ---
+
 func (h *TelegramHandler) HandleStart(c telebot.Context) error { // Start bot
 	user := c.Sender()
 	h.Logger.Printf("New user: %d %s", user.ID, user.Username)
@@ -61,14 +64,6 @@ func (h *TelegramHandler) HandleStart(c telebot.Context) error { // Start bot
 	`, telebot.ModeHTML)
 }
 
-func (h *TelegramHandler) HandleHelp(c telebot.Context) error {
-	return c.Send("Помощи пока не будет, но ты потерпи")
-}
-
-func (h *TelegramHandler) HandleAbout(c telebot.Context) error {
-	return c.Send("Тут будет инфа о боте")
-}
-
 func (h *TelegramHandler) HandleReset(c telebot.Context) error { // Clearing history
 	userID := c.Sender().ID
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -80,6 +75,14 @@ func (h *TelegramHandler) HandleReset(c telebot.Context) error { // Clearing his
 	}
 
 	return c.Send("✅ История диалога успешно сброшена")
+}
+
+func (h *TelegramHandler) HandleHelp(c telebot.Context) error {
+	return c.Send("<b>❓ Помощь:</b>\n<a href=\"https://github.com/wnderbin/QuokkaAI-Bot/tree/main/docs\">Документация</a> - имеются русская и английская версии. В ней изложена вся работа с ботом для пользователей и разработчиков.\n\nЕсли у вас возникла ошибка - это нормально, вероятно перегружены сервера. \n\n❗ Но если вы сталкиваетесь с одной и той же ошибкой несколько раз подряд, пожалуйста обратитесь с проблемой мне в личку - @wnderbin", telebot.ModeHTML)
+}
+
+func (h *TelegramHandler) HandleAbout(c telebot.Context) error {
+	return c.Send("🚀 <b>Quokka-Bot - Телеграм бот с интеграцией DeepSeekAPI.</b>\n\n<b>В этом боте используется гибкая модель DeepSeek V3 0324.</b>\n\n<b>Ключевые достоинства модели:</b>\n<b>1.</b> Глубокое понимание контекста.\n<b>2.</b> Лучшая структурированность ответов.\n<b>3.</b> API с низкой задержкой - это значит, что модель 'думает' и отвечает на запросы быстрее.\n<b>4.</b> Минимальный \"hallucination\". (меньше выдуманных фактов)\n\nРазработчик: @wnderbin", telebot.ModeHTML)
 }
 
 func (h *TelegramHandler) HandleText(c telebot.Context) error {
@@ -99,6 +102,8 @@ func (h *TelegramHandler) HandleText(c telebot.Context) error {
 
 	return h.processMessage(c)
 }
+
+// --- Additional funcs ---
 
 func (h *TelegramHandler) processMessage(c telebot.Context) error {
 	// Text message processing logic
@@ -170,7 +175,7 @@ func (h *TelegramHandler) checkRateLimit(userID int64) (allowed bool, remaining 
 }
 
 func (n *NeuralHandler) cleanUpOldMessages(ctx context.Context, olderThan time.Duration) error {
-	interval := fmt.Sprintf("%d minutes", int(olderThan.Minutes()))
+	interval := fmt.Sprintf("%d hours", int(olderThan.Hours()))
 	_, err := n.DB.ExecContext(ctx, `
 		DELETE FROM chat_messages WHERE created_at < NOW() - $1::interval
 	`, interval) // Clear messages that are stored in the chat messages for more than <olderThan> time

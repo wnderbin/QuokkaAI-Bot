@@ -1,3 +1,4 @@
+// Tasks: Sending DeepSeek API Requests, Logic of interaction with DeepSeek API.
 package models
 
 import (

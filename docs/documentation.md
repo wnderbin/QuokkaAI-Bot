@@ -134,6 +134,29 @@ make quokka-run
 CONFIG_PATH=./config/config.yaml go run main.go
 ```
 
+### Privacy Policy
+
+1. **The bot stores personal data of users for and distinction. Don't worry, the only thing that is related to personal data for storage is the Telegram ID, which the bot uses to distinguish users from each other. This is used to save the context of the dialogue with the neural network:**
+```
+CREATE TABLE chat_messages (
+id SERIAL PRIMARY KEY,
+user_id BIGINT NOT NULL,
+role TEXT NOT NULL,
+content TEXT NOT NULL,
+created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE INDEX idx_chat_messages_user_id ON chat_messages(user_id);
+-- Using an index to quickly find records in a database
+```
+**The database only stores:**
+1. **The user's Telegram ID.**
+2. **The request that the user sent to the neural network.**
+3. **The date the request was sent.**
+4. **In addition to your requests, the database also stores the neural network's responses.***
+
+**Such data in the database is automatically reset daily.**
+
 ### License
 **The project is distributed under the GNU Affero General Public License v3.0. This is a strict copyleft license that protects rights and requires openness of derivative works.**
 

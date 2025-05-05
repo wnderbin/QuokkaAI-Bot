@@ -1,3 +1,4 @@
+// Tasks: Sending requests, saving the dialog context in the database.
 package handlers
 
 import (
