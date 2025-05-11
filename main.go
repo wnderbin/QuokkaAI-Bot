@@ -10,12 +10,20 @@ import (
 	"time"
 
 	"github.com/redis/go-redis/v9"
+	"gopkg.in/natefinch/lumberjack.v2"
 	"gopkg.in/telebot.v4"
 )
 
 func main() {
-	cfg := config.Load()                                                                     // loading the configuration
-	logger := utils.NewLogger(cfg.Debug)                                                     // logger initialization
+	cfg := config.Load() // loading the configuration
+	logger := utils.NewLogger(cfg.Debug)
+	logger.SetOutput(&lumberjack.Logger{
+		Filename:   "quokkabot.log", // Log file
+		MaxSize:    100,             // MB
+		MaxBackups: 10,              // Maximum files for storage
+		MaxAge:     10,              // Maximum storage time
+		Compress:   true,            // Compression of old logs
+	}) // logger initialization
 	db, err := sql.Open("postgres", "postgres://wnd:123@localhost:5432/wnd?sslmode=disable") // database connection
 	if err != nil {
 		log.Fatal(err)
