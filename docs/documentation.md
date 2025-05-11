@@ -9,11 +9,13 @@ This is the part of the documentation for users. It presents the principle of th
 
 #### Commands for the bot
 
-| Command     | Description 
+| Command | Description
 |-------------|---------------------------------------------------
-| /start      | Welcome message and information about the bot
-| /reset      | Resets the history of the requests to the DeepSeek
-| Any text    | Request for DeepSeek
+| /start | Welcome message and information about the bot
+| /reset | Clears all history of requests to DeepSeek
+| /about | Information about the bot
+| /help | Help
+| Any text | Request to DeepSeek
 
 Requests can only be textual, since the language model itself is textual. It cannot process documents or any images, so the bot does not respond to such requests. The same applies to voice and video messages.
 

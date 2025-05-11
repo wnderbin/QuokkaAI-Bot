@@ -9,8 +9,10 @@
 [![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?logo=telegram&logoColor=white)](#)
 [![Deepseek](https://custom-icon-badges.demolab.com/badge/Deepseek-4D6BFF?logo=deepseek&logoColor=fff)](#)
 
-### Documentation
-**You can see the documentation in the docs/** directory
+### Documentation & Privacy policy
+* [Documentation](https://github.com/wnderbin/QuokkaAI-Bot/tree/main/docs)
+
+* [Privacy policy](https://github.com/wnderbin/QuokkaAI-Bot/tree/main/privacy)
 
 ### License
 **The project is distributed under the GNU AGPLv3 license**
