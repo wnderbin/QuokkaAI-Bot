@@ -43,6 +43,7 @@ func (h *TelegramHandler) RegisterHandlers() { // Registers command and message 
 	h.Bot.Handle("/reset", h.HandleReset)
 	h.Bot.Handle("/help", h.HandleHelp)
 	h.Bot.Handle("/about", h.HandleAbout)
+	h.Bot.Handle("/policy", h.HandlePolicy)
 
 	h.Bot.Handle(telebot.OnText, h.HandleText)
 }
@@ -52,7 +53,7 @@ func (h *TelegramHandler) RegisterHandlers() { // Registers command and message 
 func (h *TelegramHandler) HandleStart(c telebot.Context) error { // Start bot
 	user := c.Sender()
 	h.Logger.Printf("Start message: %d %s", user.ID, user.Username)
-	return c.Send("<b>👋 Приветствую!</b> Я бот с интеграцией DeepSeek AI (DeepSeek V3 0324)\n\nПросто напиши мне любой интересующий тебя запрос, а я на него отвечу при помощи нейросети :)\n\n<b>Команды:</b>\n/reset - Сбросить историю диалога\n/help - Помощь\n/about - О боте", telebot.ModeHTML)
+	return c.Send("<b>👋 Приветствую!</b> Я бот с интеграцией DeepSeek AI (DeepSeek V3 0324)\n\nПросто напиши мне любой интересующий тебя запрос, а я на него отвечу при помощи нейросети :)\n\n❗Перед использованием обязательно ознакомьтесь с политикой конфиденциальности\n\n<b>Команды:</b>\n/policy - Политика конфиденциальности\n/reset - Сбросить историю диалога\n/help - Помощь\n/about - О боте", telebot.ModeHTML)
 }
 
 func (h *TelegramHandler) HandleReset(c telebot.Context) error { // Clearing history
@@ -78,6 +79,12 @@ func (h *TelegramHandler) HandleAbout(c telebot.Context) error {
 	user := c.Sender()
 	h.Logger.Printf("About message: %d %s", user.ID, user.Username)
 	return c.Send("🚀 <b>Quokka-Bot - Телеграм бот с интеграцией DeepSeekAPI.</b>\n\n<b>В этом боте используется гибкая модель DeepSeek V3 0324.</b>\n\n<b>Ключевые достоинства модели:</b>\n<b>1.</b> Глубокое понимание контекста.\n<b>2.</b> Лучшая структурированность ответов.\n<b>3.</b> API с низкой задержкой - это значит, что модель 'думает' и отвечает на запросы быстрее.\n<b>4.</b> Минимальный \"hallucination\". (меньше выдуманных фактов)\n\nРазработчик: @wnderbin", telebot.ModeHTML)
+}
+
+func (h *TelegramHandler) HandlePolicy(c telebot.Context) error {
+	user := c.Sender()
+	h.Logger.Printf("Policy message: %d %s", user.ID, user.Username)
+	return c.Send("<b>📄 Политика конфиденциальности</b>\n\nЗаявление, в котором указано, как бот собирает о вас данные, как долго и в каком виде он их хранит и использует.\n\n❗<b>Необходимо ознакомиться перед использованием бота!</b>\n\n<a href=\"https://github.com/wnderbin/QuokkaAI-Bot/tree/main/privacy\">Ссылка</a>", telebot.ModeHTML)
 }
 
 func (h *TelegramHandler) HandleText(c telebot.Context) error {
