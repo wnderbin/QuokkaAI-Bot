@@ -10,7 +10,7 @@ import (
 	"quokka-ai-bot/config"
 )
 
-var encryption_key = []byte(config.AES_KEY) // openssl rand -hex 32
+var encryption_key = []byte(config.Load().AesKey) // openssl rand -hex 32
 
 func EncryptMessage(plaintext string) (string, error) {
 	block, err := aes.NewCipher(encryption_key) // creating a cipher

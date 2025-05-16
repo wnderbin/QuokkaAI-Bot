@@ -49,7 +49,7 @@ func NewDeepSeekClient(apiKey string) *DeepSeekClient {
 	}
 }
 
-func (c *DeepSeekClient) ChatCompeletion(ctx context.Context, req DeepSeekRequest) (string, error) {
+func (c *DeepSeekClient) ChatCompletion(ctx context.Context, req DeepSeekRequest) (string, error) {
 	reqBody, err := json.Marshal(req) // Marshal the request to json to send the request to deepseek api
 	if err != nil {
 		return "", fmt.Errorf("error marshaling request: %w", err)

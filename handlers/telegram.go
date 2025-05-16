@@ -44,6 +44,7 @@ func (h *TelegramHandler) RegisterHandlers() { // Registers command and message 
 	h.Bot.Handle("/help", h.HandleHelp)
 	h.Bot.Handle("/about", h.HandleAbout)
 	h.Bot.Handle("/policy", h.HandlePolicy)
+	h.Bot.Handle("/rules", h.HandleRules)
 
 	h.Bot.Handle(telebot.OnText, h.HandleText)
 }
@@ -53,7 +54,7 @@ func (h *TelegramHandler) RegisterHandlers() { // Registers command and message 
 func (h *TelegramHandler) HandleStart(c telebot.Context) error { // Start bot
 	user := c.Sender()
 	h.Logger.Printf("Start message: %d %s", user.ID, user.Username)
-	return c.Send("<b>👋 Приветствую!</b> Я бот с интеграцией DeepSeek AI (DeepSeek V3 0324)\n\nПросто напиши мне любой интересующий тебя запрос, а я на него отвечу при помощи нейросети :)\n\n❗Перед использованием обязательно ознакомьтесь с политикой конфиденциальности\n\n<b>Команды:</b>\n/policy - Политика конфиденциальности\n/reset - Сбросить историю диалога\n/help - Помощь\n/about - О боте", telebot.ModeHTML)
+	return c.Send("<b>👋 Приветствую!</b> Я бот с интеграцией DeepSeek AI (DeepSeek V3 0324)\n\nПросто напиши мне любой интересующий тебя запрос, а я на него отвечу при помощи нейросети :)\n\n❗Перед использованием обязательно ознакомьтесь с политикой конфиденциальности\n\n<b>Команды:</b>\n/rules - Дисклеймер, обязателен к ознакомлению. Вы автоматически соглашаетесь с ним при использовании бота.\n/policy - Политика конфиденциальности. Обязательна к ознакомлению. Вы автоматически соглашаетесь с ней при использовании бота.\n/reset - Сбросить историю диалога\n/help - Помощь\n/about - О боте", telebot.ModeHTML)
 }
 
 func (h *TelegramHandler) HandleReset(c telebot.Context) error { // Clearing history
@@ -87,6 +88,12 @@ func (h *TelegramHandler) HandlePolicy(c telebot.Context) error {
 	return c.Send("<b>📄 Политика конфиденциальности</b>\n\nЗаявление, в котором указано, как бот собирает о вас данные, как долго и в каком виде он их хранит и использует.\n\n❗<b>Необходимо ознакомиться перед использованием бота!</b>\n\n<a href=\"https://github.com/wnderbin/QuokkaAI-Bot/tree/main/privacy\">Ссылка</a>", telebot.ModeHTML)
 }
 
+func (h *TelegramHandler) HandleRules(c telebot.Context) error {
+	user := c.Sender()
+	h.Logger.Printf("Rules message: %d %s", user.ID, user.Username)
+	return c.Send("<b>❗ Правила использования бота | Дикслеймер</b>\n\nЭтот бот предназначен только для легальных целей. Нарушение правил может привести к блокировке и юридическим последствиям в сторону пользователя. Разработчик (@wnderbin) не несет ответственности за неправомерные и незаконные действия пользователей.я\n\n<b>Вы автоматически соглашаетесь с диклеймером, при использовании бота.</b>\n\n<a href=\"\">Подробнее</a>")
+}
+
 func (h *TelegramHandler) HandleText(c telebot.Context) error {
 	user := c.Sender()
 
@@ -115,7 +122,7 @@ func (h *TelegramHandler) processMessage(c telebot.Context) error {
 
 	h.Logger.Printf("Message from %d %s: %.100s...", user.ID, user.Username, text)
 
-	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Minute)
 	defer cancel()
 
 	if err := c.Notify(telebot.Typing); err != nil {
@@ -130,7 +137,7 @@ func (h *TelegramHandler) processMessage(c telebot.Context) error {
 
 	if response == "" { // Due to internal errors or other conditions, the neural network may send an empty response to the user
 		h.Logger.Printf("[ ERROR ] Empty response from Neural for user %d", user.ID)
-		return c.Send("🤷 Не получилось сформировать ответ. Попробуйте задать вопрос иначе.")
+		return c.Send("🤷 Не получилось сформировать ответ. Возможно, сервера перегружены. Можете попробовать задать вопрос иначе.")
 	}
 
 	cleanText := strings.TrimSpace(response) // The maximum character limit for messages in Telegram is 4000. Cut off the neural network's response if it is too long.
@@ -158,17 +165,14 @@ func (h *TelegramHandler) checkRateLimit(userID int64) (allowed bool, remaining 
 	if err != nil { // If there is an error, we allow the request, otherwise, if there is an error, the user will simply be blocked
 		return true, 0, err
 	}
-
 	if set { // If the key was installed, the limit is not exceeded.
 		return true, 0, nil
 	}
-
 	ttl, err := h.Redis.TTL(ctx, key).Result() // TTL - we get the remaining lifetime of the key
 	// Positive value - how many seconds are left before the key is deleted
 	if err != nil {
 		return true, 0, err
 	}
-
 	if ttl < 0 {
 		return true, 0, nil
 	}

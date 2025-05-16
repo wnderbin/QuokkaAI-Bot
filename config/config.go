@@ -12,6 +12,7 @@ type Config struct {
 	DeepSeekToken string `yaml:"deepseek-token"`
 	BaseURL       string `yaml:"base-url"`
 	DeepSeekModel string `yaml:"deepseek-model"`
+	AesKey        string `yaml:"aes"`
 	Debug         bool   `yaml:"debug-mode"`
 }
 
@@ -29,11 +30,6 @@ func Load() *Config {
 
 	if err := cleanenv.ReadConfig(config_path, &conf); err != nil {
 		log.Fatalf("[ config.go ] Cannot read config: %s\n", config_path)
-	}
-
-	AES_KEY = os.Getenv("AES_KEY")
-	if AES_KEY == "" {
-		log.Fatal("[ config.go ] AES-KEY is not set")
 	}
 
 	return &conf

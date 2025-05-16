@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"quokka-ai-bot/config"
 	"quokka-ai-bot/models"
+	"quokka-ai-bot/utils"
 	"time"
 )
 
@@ -38,7 +39,7 @@ func (h *NeuralHandler) HandleMessage(ctx context.Context, userID int64, text st
 		Messages: messages,
 	}
 
-	response, err := h.DeepSeekClient.ChatCompeletion(ctx, request) // Sends a request
+	response, err := h.DeepSeekClient.ChatCompletion(ctx, request) // Sends a request
 	if err != nil {
 		return "", fmt.Errorf("deepseek api error: %w", err)
 	}
@@ -57,9 +58,13 @@ func (h *NeuralHandler) ResetConversation(ctx context.Context, userID int64) err
 }
 
 func (h *NeuralHandler) saveMessage(ctx context.Context, userID int64, role, content string) error { // Saving a message to the database
-	_, err := h.DB.ExecContext(ctx,
+	aesContent, err := utils.EncryptMessage(content)
+	if err != nil {
+		return err
+	}
+	_, err = h.DB.ExecContext(ctx,
 		"INSERT INTO chat_messages (user_id, role, content, created_at) VALUES ($1, $2, $3, $4)",
-		userID, role, content, time.Now())
+		userID, role, aesContent, time.Now())
 	return err
 }
 
@@ -72,15 +77,21 @@ func (h *NeuralHandler) getMessages(ctx context.Context, userID int64, limit int
 		LIMIT $2`,
 		userID, limit)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("db query failed: %w", err)
 	}
 	defer rows.Close()
 
 	var messages []models.Message
 	for rows.Next() {
-		var msg models.Message
+		var (
+			msg models.Message
+		)
 		if err := rows.Scan(&msg.Role, &msg.Content); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("row scan failed: %w", err)
+		}
+		msg.Content, err = utils.DecryptMessage(msg.Content)
+		if err != nil {
+			return nil, fmt.Errorf("decryption failed: %w", err)
 		}
 		messages = append(messages, msg)
 	}

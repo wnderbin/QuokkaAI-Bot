@@ -1,5 +1,6 @@
 # Quokka-Bot
 **Телеграм-бот с интеграцией DeepSeek AI** \
+**Текущая версия:** 0.9.5 \
 **DeepSeek-Модель:** DeepSeek V3 0324
 
 [![Go](https://github.com/wnderbin/QuokkaAI-Bot/actions/workflows/go.yml/badge.svg)](https://github.com/wnderbin/QuokkaAI-Bot/actions/workflows/go.yml)
