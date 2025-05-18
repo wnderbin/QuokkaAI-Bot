@@ -1,5 +1,5 @@
 # Quokka-Bot Documentation
-**[View Bot →](link)**
+**[View Bot →](https://t.me/quokka_spacebot)**
 ## Navigation
 1. <a href="#user-documentation">User documentation</a>
 2. <a href="#documentation-for-advanced-users-and-developers">Documentation for users and developers</a>
