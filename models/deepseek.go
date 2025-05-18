@@ -43,7 +43,7 @@ func NewDeepSeekClient(apiKey string) *DeepSeekClient {
 	return &DeepSeekClient{
 		APIKey: apiKey,
 		HTTPClinet: &http.Client{
-			Timeout: 2 * time.Minute,
+			Timeout: 3 * time.Minute,
 		},
 		BaseURL: config.Load().BaseURL,
 	}

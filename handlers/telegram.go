@@ -26,7 +26,7 @@ func NewTelegramhandler(bot *telebot.Bot, neural *NeuralHandler, logger *log.Log
 			if err := neural.cleanUpOldMessages(context.Background(), 24*time.Hour); err != nil {
 				logger.Printf("cleanUp error: %v", err)
 			}
-			time.Sleep(1 * time.Minute)
+			time.Sleep(2 * time.Hour)
 		}
 	}() // Automatic database cleaning when messages are stored for more than X hours specified in the cleanUpMessages function
 	return &TelegramHandler{
@@ -59,7 +59,7 @@ func (h *TelegramHandler) HandleStart(c telebot.Context) error { // Start bot
 
 func (h *TelegramHandler) HandleReset(c telebot.Context) error { // Clearing history
 	user := c.Sender()
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 
 	if err := h.Neural.ResetConversation(ctx, user.ID); err != nil {
@@ -91,7 +91,7 @@ func (h *TelegramHandler) HandlePolicy(c telebot.Context) error {
 func (h *TelegramHandler) HandleRules(c telebot.Context) error {
 	user := c.Sender()
 	h.Logger.Printf("Rules message: %d %s", user.ID, user.Username)
-	return c.Send("<b>❗ Правила использования бота | Дикслеймер</b>\n\nЭтот бот предназначен только для легальных целей. Нарушение правил может привести к блокировке и юридическим последствиям в сторону пользователя. Разработчик (@wnderbin) не несет ответственности за неправомерные и незаконные действия пользователей.я\n\n<b>Вы автоматически соглашаетесь с диклеймером, при использовании бота.</b>\n\n<a href=\"\">Подробнее</a>")
+	return c.Send("<b>❗ Правила использования бота | Дикслеймер</b>\n\nЭтот бот предназначен только для легальных целей. Нарушение правил может привести к блокировке и юридическим последствиям в сторону пользователя. Разработчик (@wnderbin) не несет ответственности за неправомерные и незаконные действия пользователей.\n\n<b>Вы автоматически соглашаетесь с диклеймером, при использовании бота.</b>\n\n<a href=\"https://github.com/wnderbin/QuokkaAI-Bot/tree/main/rules\">Подробнее</a>", telebot.ModeHTML)
 }
 
 func (h *TelegramHandler) HandleText(c telebot.Context) error {
@@ -122,7 +122,7 @@ func (h *TelegramHandler) processMessage(c telebot.Context) error {
 
 	h.Logger.Printf("Message from %d %s: %.100s...", user.ID, user.Username, text)
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Minute)
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Minute)
 	defer cancel()
 
 	if err := c.Notify(telebot.Typing); err != nil {
