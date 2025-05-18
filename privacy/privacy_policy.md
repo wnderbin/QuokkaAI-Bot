@@ -10,7 +10,7 @@ This privacy policy describes what data the bot collects, how it is used and pro
 2. **Text requests/responses** - Neural network requests and its responses to the user. Used to store the context of the dialogue with the neural network. Stored in the database in encrypted form. The user's requests to the neural network are logged.
 3. **Sending date** - Required to automatically reset the dialogue after a certain period of time.
 ### 1.2 Data logging
-Logging is the process of recording user actions to a file. Logging will be used to find errors if they occur. Logging is also necessary to track illegal and unlawful user actions for subsequent blocking. The bot is not intended to create malicious, illegal or misleading content. [More]()
+Logging is the process of recording user actions to a file. Logging will be used to find errors if they occur. Logging is also necessary to track illegal and unlawful user actions for subsequent blocking. The bot is not intended to create malicious, illegal or misleading content. [More](https://github.com/wnderbin/QuokkaAI-Bot/tree/main/rules)
 1. **Username**
 2. **User Telegram ID**
 3. **User request sent to the neural network for processing**
