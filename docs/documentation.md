@@ -146,11 +146,11 @@ CONFIG_PATH=./config/config.yaml go run main.go
 
 ### Privacy Policy
 
-Privacy Policy is required to be read. The user automatically agrees to it when using the bot. [More]()
+Privacy Policy is required to be read. The user automatically agrees to it when using the bot. [More](https://github.com/wnderbin/QuokkaAI-Bot/tree/main/privacy)
 
 ### Disclaimer | Usage Policy
 
-The Usage Policy and Disclaimer are required to be read. The user automatically agrees to this policy when using the bot. [More]()
+The Usage Policy and Disclaimer are required to be read. The user automatically agrees to this policy when using the bot. [More](https://github.com/wnderbin/QuokkaAI-Bot/tree/main/rules)
 
 ### License
 **The project is distributed under the GNU Affero General Public License v3.0. This is a strict copyleft license that protects rights and requires openness of derivative works.**
